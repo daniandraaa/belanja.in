@@ -1,19 +1,23 @@
 package com.ecommerce.ecommerce.entity;
-import  jakarta.persistence.*;
+
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "users")
-public class UserEntity {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,9 +28,10 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
@@ -36,12 +41,8 @@ public class UserEntity {
     @Column(name = "status")
     private String status;
 
-    public boolean login(String username, String password) {
-        // Implementasi login logic
-        return this.username.equals(username) && this.password.equals(password);
-    }
-
-    public void logout() {
-        // Implementasi logout
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
     }
 }
