@@ -1,19 +1,19 @@
-package com.ecommerce.ecommerce.model;
-
-import jakarta.persistence.*;
+package com.ecommerce.ecommerce.entity;
+import  jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.Date;
 
-@Entity
-@Table(name = "users")
-@Data
-@Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+@Entity
+@Table(name = "users")
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,4 +1,4 @@
-package com.ecommerce.ecommerce.model;
+package com.ecommerce.ecommerce.entity;
 
 public enum UserRole {
     ADMIN,
