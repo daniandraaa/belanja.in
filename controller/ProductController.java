@@ -1,6 +1,5 @@
 package com.ecommerce.ecommerce.controller;
 
-import com.ecommerce.ecommerce.model.Product;
 import com.ecommerce.ecommerce.repository.ProductRepository;
 import org.springframework.web.bind.annotation.*;
 

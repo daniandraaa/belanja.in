@@ -2,47 +2,46 @@ package com.ecommerce.ecommerce.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Entity
-@Table(name = "users")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")
+})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
     @Column(nullable = false, unique = true)
     private String username;
-
-    @Column(nullable = false)
-    private String password;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+    @Column(nullable = false)
+    private String password;
 
-    @Column(name = "created_at")
-    private Date createdAt;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
-    @Column(name = "status")
-    private String status;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = new Date();
-    }
+    // Bidirectional relationship with Store
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Store store;
 }

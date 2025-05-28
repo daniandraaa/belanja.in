@@ -1,7 +1,6 @@
 package com.ecommerce.ecommerce.entity;
 
-public enum UserRole {
-    ADMIN,
+public enum RoleName {
     SELLER,
     BUYER
 }
