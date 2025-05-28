@@ -1,1 +1,1 @@
-CREATE DATABASE belanja_in;
+USE belanja_in;
