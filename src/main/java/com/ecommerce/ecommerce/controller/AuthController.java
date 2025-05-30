@@ -1,8 +1,8 @@
 package com.ecommerce.ecommerce.controller;
 
+import com.ecommerce.ecommerce.model.JwtAuthResponse;
 import com.ecommerce.ecommerce.model.LoginDto;
 import com.ecommerce.ecommerce.model.RegisterDto;
-import com.ecommerce.ecommerce.model.JwtAuthResponse;
 import com.ecommerce.ecommerce.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
