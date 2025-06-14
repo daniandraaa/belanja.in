@@ -52,11 +52,13 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    /* // Endpoint getProductsByCategory dikomentari
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable Long categoryId) {
         List<ProductDto> products = productService.getProductsByCategory(categoryId);
         return ResponseEntity.ok(products);
     }
+    */
 
     @GetMapping("/search")
     public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam String name) {
@@ -72,7 +74,7 @@ public class ProductController {
             ProductDto updatedProduct = productService.updateProduct(id, productDto);
             return ResponseEntity.ok(updatedProduct);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build(); // Sebaiknya berikan pesan error yang lebih spesifik jika memungkinkan
         }
     }
 
@@ -83,7 +85,7 @@ public class ProductController {
             productService.deleteProduct(id);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build(); // Sebaiknya berikan pesan error yang lebih spesifik jika memungkinkan
         }
     }
 }

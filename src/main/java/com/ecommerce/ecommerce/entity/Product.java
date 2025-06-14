@@ -17,6 +17,12 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "average_rating", columnDefinition = "DECIMAL(3,2) DEFAULT 0.0") // DECIMAL(3,2) untuk presisi misal 4.75
+    private Double averageRating = 0.0;
+
+    @Column(name = "review_count")
+    private Integer reviewCount = 0;
+
     @Column(nullable = false)
     private String name;
 
@@ -35,7 +41,9 @@ public class Product {
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "category_id")
+    // private Category category; // Dikomentari
+
+
 }
