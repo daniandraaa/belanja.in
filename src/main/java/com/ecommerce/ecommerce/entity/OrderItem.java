@@ -30,4 +30,11 @@ public class OrderItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
+
+    public BigDecimal getSubtotal() {
+        if (this.price != null && this.quantity != null) {
+            return this.price.multiply(new BigDecimal(this.quantity));
+        }
+        return BigDecimal.ZERO;
+    }
 }
