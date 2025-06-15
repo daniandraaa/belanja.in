@@ -15,11 +15,11 @@ public class OrderItemDto {
 
     @NotNull(message = "Quantity is required")
     @Positive(message = "Quantity must be positive")
-    private Integer quantity;
-
-    // Response fields
+    private Integer quantity;    // Response fields
     private String productName;
     private BigDecimal price;
     private BigDecimal subtotal;
+    private Long storeId;
     private String storeName;
+    private String storeUsername;
 }

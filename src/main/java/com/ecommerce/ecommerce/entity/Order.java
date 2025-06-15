@@ -21,10 +21,10 @@ public class Order {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDateTime orderDate;
-
-    @Enumerated(EnumType.STRING)
+    private LocalDateTime orderDate;    @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    private LocalDateTime statusUpdatedAt;
 
     @Column(nullable = false)
     private BigDecimal totalAmount;
@@ -34,12 +34,12 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private User user;    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public enum OrderStatus {
-        PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_detail_id")
+    private PaymentDetail paymentDetail;public enum OrderStatus {
+        PENDING, PROCESSING, SHIPPED, DELIVERED, ACCEPTED, CANCELLED
     }
 }
