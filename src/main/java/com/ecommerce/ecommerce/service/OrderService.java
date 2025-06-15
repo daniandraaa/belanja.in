@@ -35,7 +35,7 @@ public class OrderService {
     @Autowired
     private UserRepository userRepository;    @Autowired
     private CartRepository cartRepository;    @Autowired
-    private OrederStatusScheduleService statusSchedulerService;
+    private OrderStatusSchedulerService statusSchedulerService;
 
     @Autowired
     private PaymentService paymentService;
@@ -245,6 +245,63 @@ public class OrderService {
         cartRepository.save(cart); // Simpan cart yang sudah kosong (orphanRemoval akan menghapus CartItems dari DB)
 
         return mapToDto(savedOrder); // Metode mapToDto Anda yang ada di OrderService
+    }
+
+
+    @Transactional
+    public OrderDto createDirectOrder(Long productId, int quantity, String shippingAddress, PaymentDetailDto paymentDetailDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("User not found: " + currentUsername));
+
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
+
+
+        if (product.getStock() == null || product.getStock() < quantity) {
+            throw new RuntimeException("Insufficient stock for product: " + product.getName() +
+                    ". Available: " + (product.getStock() == null ? 0 : product.getStock()) +
+                    ", Requested: " + quantity);
+        }
+
+
+        PaymentDetail paymentDetail = paymentService.createPaymentDetail(paymentDetailDto);
+
+
+        Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus(Order.OrderStatus.PENDING);
+        order.setStatusUpdatedAt(LocalDateTime.now());
+        order.setShippingAddress(shippingAddress);
+        order.setUser(currentUser);
+        order.setPaymentDetail(paymentDetail);
+
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setProduct(product);
+        orderItem.setStore(product.getStore()); // Set store from product
+        orderItem.setQuantity(quantity);
+        orderItem.setPrice(product.getPrice());
+        orderItem.setOrder(order);
+
+        List<OrderItem> orderItems = new ArrayList<>();
+        orderItems.add(orderItem);
+        order.setOrderItems(orderItems);
+
+
+        BigDecimal totalAmount = product.getPrice().multiply(BigDecimal.valueOf(quantity));
+        order.setTotalAmount(totalAmount);
+
+
+        product.setStock(product.getStock() - quantity);
+        productRepository.save(product);
+
+
+        Order savedOrder = orderRepository.save(order);
+
+        return mapToDto(savedOrder);
     }
 
     // Helper method to restore product stock

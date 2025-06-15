@@ -1,6 +1,7 @@
 package com.ecommerce.ecommerce.controller;
 
 import com.ecommerce.ecommerce.model.CheckoutRequestDto;
+import com.ecommerce.ecommerce.model.DirectCheckoutRequestDto;
 import com.ecommerce.ecommerce.model.OrderDto;
 import com.ecommerce.ecommerce.model.UpdateOrderStatusDto;
 import com.ecommerce.ecommerce.service.OrderService;
@@ -57,6 +58,26 @@ public class OrderController {
             OrderDto createdOrder = orderService.createOrderFromCurrentUserCart(
                     checkoutRequestDto.getShippingAddress(),
                     checkoutRequestDto.getPaymentDetail()
+            );
+            return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", e.getMessage(),
+                    "timestamp", java.time.LocalDateTime.now()
+            ));
+        }
+    }
+
+    // Endpoint untuk direct checkout (beli langsung tanpa cart)
+    @PostMapping("/checkout/direct")
+    @PreAuthorize("hasRole('BUYER')")
+    public ResponseEntity<?> directCheckout(@Valid @RequestBody DirectCheckoutRequestDto directCheckoutDto) {
+        try {
+            OrderDto createdOrder = orderService.createDirectOrder(
+                    directCheckoutDto.getProductId(),
+                    directCheckoutDto.getQuantity(),
+                    directCheckoutDto.getShippingAddress(),
+                    directCheckoutDto.getPaymentDetail()
             );
             return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
         } catch (RuntimeException e) {

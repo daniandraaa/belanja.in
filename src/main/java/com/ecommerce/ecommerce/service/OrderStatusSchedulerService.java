@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class OrederStatusScheduleService {
+public class OrderStatusSchedulerService {
 
     @Autowired
     private OrderRepository orderRepository;
