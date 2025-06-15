@@ -17,12 +17,12 @@ public class OrderDto {
     private String shippingAddress;
 
     @NotEmpty(message = "Order items cannot be empty")
-    private List<OrderItemDto> orderItems;
-
-    // Response fields
+    private List<OrderItemDto> orderItems;    // Response fields
     private LocalDateTime orderDate;
+    private LocalDateTime statusUpdatedAt;
     private Order.OrderStatus status;
     private BigDecimal totalAmount;
     private String buyerUsername;
     private String buyerName;
+    private PaymentDetailDto paymentDetail;
 }

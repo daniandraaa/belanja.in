@@ -77,12 +77,9 @@ public class ReviewService {
         if (!orderItem.getProduct().equals(product)) {
             throw new RuntimeException("This order item is not for the specified product.");
             // Rekomendasi: throw new BadRequestException(...);
-        }
-
-        // Validasi 3: Apakah order untuk OrderItem ini sudah selesai (misal, DELIVERED)?
-        if (orderItem.getOrder().getStatus() != Order.OrderStatus.DELIVERED) { // Sesuaikan dengan status "selesai" Anda
-            throw new RuntimeException("Product from this order item has not been delivered yet or order is not completed.");
-            // Rekomendasi: throw new BadRequestException(...);
+        }        // Validasi 3: Apakah order untuk OrderItem ini sudah ACCEPTED oleh buyer?
+        if (orderItem.getOrder().getStatus() != Order.OrderStatus.ACCEPTED) {
+            throw new RuntimeException("You can only review products from orders that have been ACCEPTED. Please accept the order first after delivery.");
         }
 
         // Validasi 4: Apakah user sudah pernah mereview OrderItem ini?
@@ -132,8 +129,7 @@ public class ReviewService {
         updateProductAverageRating(review.getProduct().getId());
     }
 
-    // Opsional: Metode untuk memperbarui rata-rata rating produk
-    // Ini bisa dipanggil setelah create, update, atau delete review
+
     @Transactional
     public void updateProductAverageRating(Long productId) {
         Product product = productRepository.findById(productId).orElse(null);
@@ -141,11 +137,11 @@ public class ReviewService {
 
         List<Review> reviews = reviewRepository.findByProduct(product);
         if (reviews.isEmpty()) {
-            product.setAverageRating(0.0); // Atau null
+            product.setAverageRating(0.0);
             product.setReviewCount(0);
         } else {
             double average = reviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
-            product.setAverageRating(average); // Pastikan tipe field di Product sesuai (Double)
+            product.setAverageRating(average);
             product.setReviewCount(reviews.size());
         }
         productRepository.save(product);
